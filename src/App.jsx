@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import Home from './pages/Home'
@@ -5,7 +6,6 @@ import Assessment from './pages/Assessment'
 import Results from './pages/Results'
 import Contact from './pages/Contact'
 import NotFound from './pages/NotFound'
-import { useEffect } from 'react'
 import { supabase } from './lib/supabaseClient'
 
 function App() {
@@ -13,6 +13,12 @@ function App() {
     // Log page views for analytics
     const logPageView = async () => {
       try {
+        // In preview mode, don't attempt to log to Supabase
+        if (import.meta.env.DEV) {
+          console.log('Preview mode: Page view logged for', window.location.pathname)
+          return
+        }
+        
         await supabase
           .from('page_views')
           .insert([{ page: window.location.pathname }])

@@ -1,6 +1,7 @@
-import { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useState, useEffect } from 'react'
 
 const ScoreContext = createContext()
+const LOCAL_STORAGE_KEY = 'exitPlanningAssessment'
 
 export function useScore() {
   return useContext(ScoreContext)
@@ -22,6 +23,32 @@ export function ScoreProvider({ children }) {
     email: '',
     phone: ''
   })
+
+  // Load data from localStorage on initial render
+  useEffect(() => {
+    const savedData = localStorage.getItem(LOCAL_STORAGE_KEY)
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData)
+        if (parsedData.scores) setScores(parsedData.scores)
+        if (parsedData.answers) setAnswers(parsedData.answers)
+        if (parsedData.userInfo) setUserInfo(parsedData.userInfo)
+      } catch (error) {
+        console.error('Error parsing saved assessment data:', error)
+      }
+    }
+  }, [])
+
+  // Save data to localStorage whenever it changes
+  useEffect(() => {
+    const dataToSave = {
+      scores,
+      answers,
+      userInfo,
+      lastUpdated: new Date().toISOString()
+    }
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(dataToSave))
+  }, [scores, answers, userInfo])
 
   const updateCategory = (category, score) => {
     setScores(prev => ({
@@ -59,6 +86,24 @@ export function ScoreProvider({ children }) {
     return { level: 'Poor', description: 'Your business needs extensive work in most areas before an exit is feasible.' }
   }
 
+  const clearSavedData = () => {
+    localStorage.removeItem(LOCAL_STORAGE_KEY)
+    setScores({
+      financialReadiness: 0,
+      businessOperations: 0,
+      legalCompliance: 0,
+      marketPosition: 0,
+      successionPlanning: 0,
+      personalReadiness: 0
+    })
+    setAnswers({})
+    setUserInfo({
+      name: '',
+      email: '',
+      phone: ''
+    })
+  }
+
   const value = {
     scores,
     updateCategory,
@@ -67,7 +112,8 @@ export function ScoreProvider({ children }) {
     calculateTotalScore,
     getReadinessLevel,
     userInfo,
-    setUserInfo
+    setUserInfo,
+    clearSavedData
   }
 
   return (

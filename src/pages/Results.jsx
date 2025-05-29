@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useScore } from '../contexts/ScoreContext'
 import { categories, getRecommendations } from '../data/questions'
 import ScoreChart from '../components/ScoreChart'
-import { FaDownload, FaEnvelope, FaExclamationTriangle } from 'react-icons/fa'
+import { FaDownload, FaEnvelope, FaExclamationTriangle, FaRedo } from 'react-icons/fa'
 import { generatePDF } from '../lib/pdfGenerator'
 import { toast } from 'react-toastify'
 
 function Results() {
   const navigate = useNavigate()
-  const { scores, calculateTotalScore, getReadinessLevel } = useScore()
+  const { scores, calculateTotalScore, getReadinessLevel, clearSavedData } = useScore()
   const [recommendations, setRecommendations] = useState({})
   const [showIncompleteWarning, setShowIncompleteWarning] = useState(false)
   
@@ -45,6 +45,14 @@ function Results() {
   
   const handleStartAssessment = () => {
     navigate('/assessment')
+  }
+  
+  const handleStartNewAssessment = () => {
+    if (window.confirm('Are you sure you want to start a new assessment? This will clear all your current data.')) {
+      clearSavedData()
+      navigate('/assessment')
+      toast.success('Started a new assessment')
+    }
   }
   
   const readinessInfo = getReadinessLevel()
@@ -110,6 +118,13 @@ function Results() {
                     className="btn btn-secondary w-full flex items-center justify-center"
                   >
                     <FaEnvelope className="mr-2" /> Email Results
+                  </button>
+                  
+                  <button
+                    onClick={handleStartNewAssessment}
+                    className="btn btn-outline w-full flex items-center justify-center"
+                  >
+                    <FaRedo className="mr-2" /> Start New Assessment
                   </button>
                 </div>
               </div>
