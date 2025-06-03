@@ -1,121 +1,86 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 
 const ScoreContext = createContext()
-const LOCAL_STORAGE_KEY = 'exitPlanningAssessment'
 
 export function useScore() {
   return useContext(ScoreContext)
 }
 
 export function ScoreProvider({ children }) {
-  const [scores, setScores] = useState({
-    financialReadiness: 0,
-    businessOperations: 0,
-    legalCompliance: 0,
-    marketPosition: 0,
-    successionPlanning: 0,
-    personalReadiness: 0
-  })
-  
+  const [scores, setScores] = useState({})
   const [answers, setAnswers] = useState({})
-  const [userInfo, setUserInfo] = useState({
-    name: '',
-    email: '',
-    phone: ''
-  })
-
-  // Load data from localStorage on initial render
+  const [completedCategories, setCompletedCategories] = useState([])
+  
+  // Load saved data from localStorage on initial render
   useEffect(() => {
-    const savedData = localStorage.getItem(LOCAL_STORAGE_KEY)
-    if (savedData) {
-      try {
-        const parsedData = JSON.parse(savedData)
-        if (parsedData.scores) setScores(parsedData.scores)
-        if (parsedData.answers) setAnswers(parsedData.answers)
-        if (parsedData.userInfo) setUserInfo(parsedData.userInfo)
-      } catch (error) {
-        console.error('Error parsing saved assessment data:', error)
-      }
-    }
+    const savedScores = localStorage.getItem('exitReadyScores')
+    const savedAnswers = localStorage.getItem('exitReadyAnswers')
+    const savedCompletedCategories = localStorage.getItem('exitReadyCompletedCategories')
+    
+    if (savedScores) setScores(JSON.parse(savedScores))
+    if (savedAnswers) setAnswers(JSON.parse(savedAnswers))
+    if (savedCompletedCategories) setCompletedCategories(JSON.parse(savedCompletedCategories))
   }, [])
-
+  
   // Save data to localStorage whenever it changes
   useEffect(() => {
-    const dataToSave = {
-      scores,
-      answers,
-      userInfo,
-      lastUpdated: new Date().toISOString()
-    }
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(dataToSave))
-  }, [scores, answers, userInfo])
-
-  const updateCategory = (category, score) => {
-    setScores(prev => ({
-      ...prev,
-      [category]: score
+    localStorage.setItem('exitReadyScores', JSON.stringify(scores))
+    localStorage.setItem('exitReadyAnswers', JSON.stringify(answers))
+    localStorage.setItem('exitReadyCompletedCategories', JSON.stringify(completedCategories))
+  }, [scores, answers, completedCategories])
+  
+  // Update scores for a category
+  const updateCategoryScore = (categoryId, score) => {
+    setScores(prevScores => ({
+      ...prevScores,
+      [categoryId]: score
     }))
   }
-
-  const updateAnswers = (category, questionId, value) => {
-    setAnswers(prev => ({
-      ...prev,
-      [category]: {
-        ...(prev[category] || {}),
-        [questionId]: value
-      }
+  
+  // Save answers for a category
+  const saveAnswers = (categoryId, categoryAnswers) => {
+    setAnswers(prevAnswers => ({
+      ...prevAnswers,
+      [categoryId]: categoryAnswers
     }))
   }
-
-  const calculateTotalScore = () => {
-    const total = Object.values(scores).reduce((sum, score) => sum + score, 0)
-    const maxPossible = Object.keys(scores).length * 10
-    return {
-      raw: total,
-      percentage: Math.round((total / maxPossible) * 100)
+  
+  // Mark a category as completed
+  const markCategoryCompleted = (categoryId) => {
+    if (!completedCategories.includes(categoryId)) {
+      setCompletedCategories(prev => [...prev, categoryId])
     }
   }
-
-  const getReadinessLevel = () => {
-    const percentage = calculateTotalScore().percentage
+  
+  // Calculate overall score
+  const calculateOverallScore = () => {
+    if (Object.keys(scores).length === 0) return 0
     
-    if (percentage >= 90) return { level: 'Excellent', description: 'Your business is well-positioned for exit.' }
-    if (percentage >= 75) return { level: 'Good', description: 'Your business is mostly ready for exit with minor improvements needed.' }
-    if (percentage >= 60) return { level: 'Moderate', description: 'Your business has a solid foundation but needs significant work before exit.' }
-    if (percentage >= 40) return { level: 'Fair', description: 'Your business requires substantial improvements before considering an exit.' }
-    return { level: 'Poor', description: 'Your business needs extensive work in most areas before an exit is feasible.' }
+    const totalScore = Object.values(scores).reduce((sum, score) => sum + score, 0)
+    return Math.round(totalScore / Object.keys(scores).length)
   }
-
-  const clearSavedData = () => {
-    localStorage.removeItem(LOCAL_STORAGE_KEY)
-    setScores({
-      financialReadiness: 0,
-      businessOperations: 0,
-      legalCompliance: 0,
-      marketPosition: 0,
-      successionPlanning: 0,
-      personalReadiness: 0
-    })
+  
+  // Reset all data
+  const resetAll = () => {
+    setScores({})
     setAnswers({})
-    setUserInfo({
-      name: '',
-      email: '',
-      phone: ''
-    })
+    setCompletedCategories([])
+    localStorage.removeItem('exitReadyScores')
+    localStorage.removeItem('exitReadyAnswers')
+    localStorage.removeItem('exitReadyCompletedCategories')
   }
-
+  
   const value = {
     scores,
-    updateCategory,
     answers,
-    updateAnswers,
-    calculateTotalScore,
-    getReadinessLevel,
-    userInfo,
-    setUserInfo,
-    clearSavedData
+    completedCategories,
+    updateCategoryScore,
+    saveAnswers,
+    markCategoryCompleted,
+    calculateOverallScore,
+    resetAll
   }
-
+  
   return (
     <ScoreContext.Provider value={value}>
       {children}

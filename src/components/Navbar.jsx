@@ -1,94 +1,43 @@
-import { Link, useLocation } from 'react-router-dom'
-import { useState } from 'react'
-import { FaBars, FaTimes } from 'react-icons/fa'
+import React from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { FaChartLine } from 'react-icons/fa'
 
 function Navbar() {
-  const [isOpen, setIsOpen] = useState(false)
-  const location = useLocation()
+  const navigate = useNavigate()
   
-  const toggleMenu = () => {
-    setIsOpen(!isOpen)
-  }
-
-  const isActive = (path) => {
-    return location.pathname === path ? 'text-primary-600 font-semibold' : 'text-gray-700 hover:text-primary-600'
-  }
-
   return (
-    <nav className="bg-white shadow-md">
+    <nav className="bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <div className="flex items-center">
+          <div className="flex">
             <Link to="/" className="flex-shrink-0 flex items-center">
-              <span className="text-xl font-bold text-primary-700">Business Exit Scorecard</span>
+              <FaChartLine className="h-8 w-8 text-primary-600" />
+              <span className="ml-2 text-xl font-bold text-gray-900">ExitReady</span>
             </Link>
           </div>
-          
-          {/* Desktop menu */}
-          <div className="hidden md:flex md:items-center md:space-x-8">
-            <Link to="/" className={`${isActive('/')} transition-colors duration-200 px-3 py-2 text-sm font-medium`}>
-              Home
-            </Link>
-            <Link to="/assessment" className={`${isActive('/assessment')} transition-colors duration-200 px-3 py-2 text-sm font-medium`}>
-              Assessment
-            </Link>
-            <Link to="/results" className={`${isActive('/results')} transition-colors duration-200 px-3 py-2 text-sm font-medium`}>
-              Results
-            </Link>
-            <Link to="/contact" className={`${isActive('/contact')} transition-colors duration-200 px-3 py-2 text-sm font-medium`}>
-              Contact
-            </Link>
-          </div>
-          
-          {/* Mobile menu button */}
-          <div className="flex md:hidden items-center">
-            <button
-              onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-primary-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
-              aria-expanded="false"
-            >
-              <span className="sr-only">Open main menu</span>
-              {isOpen ? <FaTimes className="block h-6 w-6" /> : <FaBars className="block h-6 w-6" />}
-            </button>
+          <div className="flex items-center">
+            <div className="hidden md:ml-6 md:flex md:space-x-8">
+              <Link to="/" className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                Home
+              </Link>
+              <Link to="/assessment" className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                Assessment
+              </Link>
+              <Link to="/contact" className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                Contact
+              </Link>
+            </div>
+            <div className="ml-6">
+              <button
+                onClick={() => navigate('/assessment')}
+                className="btn btn-primary btn-sm"
+              >
+                Start Assessment
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      
-      {/* Mobile menu */}
-      {isOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Link 
-              to="/" 
-              className={`${isActive('/') ? 'bg-primary-50 text-primary-600' : 'text-gray-700 hover:bg-gray-100 hover:text-primary-600'} block px-3 py-2 rounded-md text-base font-medium`}
-              onClick={() => setIsOpen(false)}
-            >
-              Home
-            </Link>
-            <Link 
-              to="/assessment" 
-              className={`${isActive('/assessment') ? 'bg-primary-50 text-primary-600' : 'text-gray-700 hover:bg-gray-100 hover:text-primary-600'} block px-3 py-2 rounded-md text-base font-medium`}
-              onClick={() => setIsOpen(false)}
-            >
-              Assessment
-            </Link>
-            <Link 
-              to="/results" 
-              className={`${isActive('/results') ? 'bg-primary-50 text-primary-600' : 'text-gray-700 hover:bg-gray-100 hover:text-primary-600'} block px-3 py-2 rounded-md text-base font-medium`}
-              onClick={() => setIsOpen(false)}
-            >
-              Results
-            </Link>
-            <Link 
-              to="/contact" 
-              className={`${isActive('/contact') ? 'bg-primary-50 text-primary-600' : 'text-gray-700 hover:bg-gray-100 hover:text-primary-600'} block px-3 py-2 rounded-md text-base font-medium`}
-              onClick={() => setIsOpen(false)}
-            >
-              Contact
-            </Link>
-          </div>
-        </div>
-      )}
     </nav>
   )
 }

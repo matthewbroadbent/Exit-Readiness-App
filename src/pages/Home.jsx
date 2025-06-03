@@ -1,3 +1,4 @@
+import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaChartLine, FaClipboardCheck, FaFileAlt, FaEnvelope } from 'react-icons/fa'
 import { categories } from '../data/questions'

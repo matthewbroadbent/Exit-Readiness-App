@@ -1,201 +1,232 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { FaArrowRight, FaArrowLeft, FaCheck } from 'react-icons/fa'
 import { categories } from '../data/questions'
 import { useScore } from '../contexts/ScoreContext'
-import QuestionCard from '../components/QuestionCard'
-import ProgressBar from '../components/ProgressBar'
+import { toast } from 'react-toastify'
 import CategoryCard from '../components/CategoryCard'
 
 function Assessment() {
-  const navigate = useNavigate()
   const location = useLocation()
-  const { scores, updateCategory, answers } = useScore()
+  const navigate = useNavigate()
+  const { answers, saveAnswers, updateCategoryScore, markCategoryCompleted, completedCategories } = useScore()
   
-  const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0)
-  const [currentCategory, setCurrentCategory] = useState(categories[0])
-  const [answeredQuestions, setAnsweredQuestions] = useState({})
-  const [completedCategories, setCompletedCategories] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState(null)
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+  const [currentAnswers, setCurrentAnswers] = useState({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
   
+  // Initialize from location state if available
   useEffect(() => {
-    // Check if a specific category was requested
     if (location.state?.categoryId) {
-      const index = categories.findIndex(c => c.id === location.state.categoryId)
-      if (index !== -1) {
-        setCurrentCategoryIndex(index)
-        setCurrentCategory(categories[index])
+      const category = categories.find(c => c.id === location.state.categoryId)
+      if (category) {
+        handleCategorySelect(category.id)
       }
     }
-    
-    // Initialize answered questions from context
-    const answered = {}
-    Object.keys(answers).forEach(categoryId => {
-      answered[categoryId] = Object.keys(answers[categoryId] || {}).length
-    })
-    setAnsweredQuestions(answered)
-    
-    // Initialize completed categories
-    const completed = []
-    categories.forEach(category => {
-      const categoryAnswers = answers[category.id] || {}
-      if (Object.keys(categoryAnswers).length === category.questions.length) {
-        completed.push(category.id)
-      }
-    })
-    setCompletedCategories(completed)
-  }, [location.state, answers])
+  }, [location.state])
+  
+  // Load saved answers when category changes
+  useEffect(() => {
+    if (selectedCategory && answers[selectedCategory.id]) {
+      setCurrentAnswers(answers[selectedCategory.id])
+    } else {
+      setCurrentAnswers({})
+    }
+  }, [selectedCategory, answers])
   
   const handleCategorySelect = (categoryId) => {
-    const index = categories.findIndex(c => c.id === categoryId)
-    if (index !== -1) {
-      setCurrentCategoryIndex(index)
-      setCurrentCategory(categories[index])
-    }
+    const category = categories.find(c => c.id === categoryId)
+    setSelectedCategory(category)
+    setCurrentQuestionIndex(0)
   }
   
-  const handleQuestionAnswer = (questionId, value) => {
-    // Update answered questions count
-    setAnsweredQuestions(prev => ({
+  const handleAnswerSelect = (questionId, value) => {
+    setCurrentAnswers(prev => ({
       ...prev,
-      [currentCategory.id]: (prev[currentCategory.id] || 0) + 1
+      [questionId]: value
     }))
-    
-    // Check if category is complete
-    const categoryAnswers = answers[currentCategory.id] || {}
-    const updatedAnswers = { ...categoryAnswers, [questionId]: value }
-    
-    if (Object.keys(updatedAnswers).length === currentCategory.questions.length) {
-      // Calculate category score (average of all answers)
-      const total = Object.values(updatedAnswers).reduce((sum, val) => sum + val, 0)
-      const average = Math.round(total / currentCategory.questions.length)
-      
-      // Update category score
-      updateCategory(currentCategory.id, average)
-      
-      // Mark category as completed
-      if (!completedCategories.includes(currentCategory.id)) {
-        setCompletedCategories(prev => [...prev, currentCategory.id])
-      }
-    }
   }
   
   const handleNext = () => {
-    if (currentCategoryIndex < categories.length - 1) {
-      setCurrentCategoryIndex(currentCategoryIndex + 1)
-      setCurrentCategory(categories[currentCategoryIndex + 1])
-    } else {
-      navigate('/results')
+    if (currentQuestionIndex < selectedCategory.questions.length - 1) {
+      setCurrentQuestionIndex(prev => prev + 1)
     }
   }
   
   const handlePrevious = () => {
-    if (currentCategoryIndex > 0) {
-      setCurrentCategoryIndex(currentCategoryIndex - 1)
-      setCurrentCategory(categories[currentCategoryIndex - 1])
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(prev => prev - 1)
     }
   }
   
-  const handleViewResults = () => {
-    navigate('/results')
+  const handleSubmit = async () => {
+    if (Object.keys(currentAnswers).length !== selectedCategory.questions.length) {
+      toast.error('Please answer all questions before submitting')
+      return
+    }
+    
+    setIsSubmitting(true)
+    
+    try {
+      // Calculate score (average of all answers)
+      const totalScore = Object.values(currentAnswers).reduce((sum, value) => sum + value, 0)
+      const averageScore = Math.round(totalScore / selectedCategory.questions.length)
+      
+      // Save answers and update score
+      saveAnswers(selectedCategory.id, currentAnswers)
+      updateCategoryScore(selectedCategory.id, averageScore)
+      markCategoryCompleted(selectedCategory.id)
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      toast.success(`${selectedCategory.title} assessment completed!`)
+      
+      // Check if all categories are completed
+      const allCompleted = categories.every(category => 
+        completedCategories.includes(category.id) || category.id === selectedCategory.id
+      )
+      
+      if (allCompleted) {
+        navigate('/results')
+      } else {
+        setSelectedCategory(null)
+      }
+    } catch (error) {
+      toast.error('There was an error saving your answers. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
   
-  const getCategoryProgress = (categoryId) => {
-    return (answeredQuestions[categoryId] || 0) / (categories.find(c => c.id === categoryId)?.questions.length || 1) * 100
-  }
-  
-  const getTotalProgress = () => {
-    const totalQuestions = categories.reduce((sum, category) => sum + category.questions.length, 0)
-    const totalAnswered = Object.values(answeredQuestions).reduce((sum, count) => sum + count, 0)
-    return (totalAnswered / totalQuestions) * 100
-  }
-  
-  const isCategoryComplete = (categoryId) => {
-    return completedCategories.includes(categoryId)
-  }
-  
-  const allCategoriesCompleted = completedCategories.length === categories.length
+  const currentQuestion = selectedCategory?.questions[currentQuestionIndex]
   
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Business Exit Planning Assessment</h1>
-        <p className="text-lg text-gray-600 mb-6">
-          Complete all six categories to receive your comprehensive exit readiness score and recommendations.
-        </p>
-        
-        <ProgressBar 
-          value={Math.round(getTotalProgress())} 
-          max={100} 
-          label="Overall Progress" 
-          className="mb-8"
-        />
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-          {categories.map((category) => (
-            <div key={category.id} className="flex flex-col">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {!selectedCategory ? (
+        <>
+          <div className="text-center mb-12">
+            <h1 className="text-3xl font-bold text-gray-900">Business Exit Readiness Assessment</h1>
+            <p className="mt-4 text-lg font-medium text-white bg-primary-700 px-6 py-3 rounded-lg max-w-3xl mx-auto shadow-md">
+              Select a category to begin your assessment. Each category contains 5 questions to evaluate your exit readiness.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {categories.map((category) => (
               <CategoryCard 
+                key={category.id} 
                 category={category} 
-                completed={isCategoryComplete(category.id)}
+                completed={completedCategories.includes(category.id)}
                 onClick={handleCategorySelect}
               />
-              <ProgressBar 
-                value={Math.round(getCategoryProgress(category.id))} 
-                max={100} 
-                className="mt-2" 
-              />
-            </div>
-          ))}
-        </div>
-        
-        {allCategoriesCompleted && (
-          <div className="text-center mb-8">
-            <button 
-              onClick={handleViewResults}
-              className="btn btn-success text-lg px-8 py-3"
-            >
-              View Your Results
-            </button>
+            ))}
           </div>
-        )}
-      </div>
-      
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">{currentCategory.title}</h2>
-          <span className="text-sm font-medium text-gray-600">
-            Category {currentCategoryIndex + 1} of {categories.length}
-          </span>
-        </div>
-        
-        <p className="text-gray-600 mb-6">{currentCategory.description}</p>
-        
-        <div className="space-y-6">
-          {currentCategory.questions.map((question) => (
-            <QuestionCard 
-              key={question.id} 
-              question={question} 
-              categoryId={currentCategory.id}
-              onAnswer={handleQuestionAnswer}
-            />
-          ))}
-        </div>
-        
-        <div className="flex justify-between mt-8">
-          <button 
-            onClick={handlePrevious}
-            disabled={currentCategoryIndex === 0}
-            className={`btn ${currentCategoryIndex === 0 ? 'bg-gray-300 cursor-not-allowed' : 'btn-secondary'}`}
-          >
-            Previous Category
-          </button>
           
-          <button 
-            onClick={handleNext}
-            className="btn btn-primary"
-          >
-            {currentCategoryIndex < categories.length - 1 ? 'Next Category' : 'View Results'}
-          </button>
+          {completedCategories.length > 0 && (
+            <div className="mt-12 text-center">
+              <button
+                onClick={() => navigate('/results')}
+                className="btn btn-primary"
+              >
+                View Your Results
+              </button>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="max-w-3xl mx-auto">
+          <div className="mb-8">
+            <button
+              onClick={() => setSelectedCategory(null)}
+              className="text-primary-600 hover:text-primary-800 font-medium flex items-center"
+            >
+              <FaArrowLeft className="mr-2" />
+              Back to Categories
+            </button>
+            <h2 className="text-2xl font-bold text-gray-900 mt-4">{selectedCategory.title}</h2>
+            <p className="text-gray-600">{selectedCategory.description}</p>
+            
+            <div className="mt-4 flex items-center">
+              <div className="flex-1 bg-gray-200 rounded-full h-2">
+                <div 
+                  className="bg-primary-600 h-2 rounded-full" 
+                  style={{ width: `${((currentQuestionIndex + 1) / selectedCategory.questions.length) * 100}%` }}
+                ></div>
+              </div>
+              <span className="ml-4 text-sm font-medium text-gray-600">
+                Question {currentQuestionIndex + 1} of {selectedCategory.questions.length}
+              </span>
+            </div>
+          </div>
+          
+          {currentQuestion && (
+            <div className="bg-white shadow-md rounded-lg p-6 mb-8">
+              <h3 className="text-xl font-semibold text-gray-900 mb-6">{currentQuestion.text}</h3>
+              
+              <div className="space-y-4">
+                {currentQuestion.options.map((option) => (
+                  <div 
+                    key={option.value}
+                    onClick={() => handleAnswerSelect(currentQuestion.id, option.value)}
+                    className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                      currentAnswers[currentQuestion.id] === option.value 
+                        ? 'border-primary-500 bg-primary-50' 
+                        : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                  >
+                    <div className="flex items-start">
+                      <div className={`flex-shrink-0 h-5 w-5 rounded-full border flex items-center justify-center ${
+                        currentAnswers[currentQuestion.id] === option.value 
+                          ? 'border-primary-500 bg-primary-500' 
+                          : 'border-gray-300'
+                      }`}>
+                        {currentAnswers[currentQuestion.id] === option.value && (
+                          <FaCheck className="h-3 w-3 text-white" />
+                        )}
+                      </div>
+                      <div className="ml-3">
+                        <p className="text-gray-900 font-medium">{option.text}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          <div className="flex justify-between">
+            <button
+              onClick={handlePrevious}
+              disabled={currentQuestionIndex === 0}
+              className="btn btn-secondary"
+            >
+              <FaArrowLeft className="mr-2" />
+              Previous
+            </button>
+            
+            {currentQuestionIndex < selectedCategory.questions.length - 1 ? (
+              <button
+                onClick={handleNext}
+                disabled={!currentAnswers[currentQuestion?.id]}
+                className="btn btn-primary"
+              >
+                Next
+                <FaArrowRight className="ml-2" />
+              </button>
+            ) : (
+              <button
+                onClick={handleSubmit}
+                disabled={isSubmitting || !currentAnswers[currentQuestion?.id]}
+                className="btn btn-success"
+              >
+                {isSubmitting ? 'Submitting...' : 'Complete Assessment'}
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

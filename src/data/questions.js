@@ -1,418 +1,380 @@
-// Sample assessment categories and questions
 export const categories = [
   {
-    id: 'financialReadiness',
+    id: 'financial',
     title: 'Financial Readiness',
-    icon: 'chart-line',
-    description: 'Evaluate your business financial health and readiness for exit.',
+    description: 'Evaluate your financial documentation, performance metrics, and valuation readiness',
+    icon: 'money',
     questions: [
       {
-        id: 'fin1',
-        text: 'How consistently has your business shown profit growth over the past 3 years?',
+        id: 'financial_1',
+        text: 'Do you have at least 3 years of clean, audited financial statements?',
         options: [
-          { value: 10, text: 'Consistent growth of 15%+ annually' },
-          { value: 8, text: 'Steady growth of 5-15% annually' },
-          { value: 5, text: 'Fluctuating but generally positive' },
-          { value: 3, text: 'Mostly flat or minimal growth' },
-          { value: 1, text: 'Declining or unprofitable' }
+          { value: 1, text: 'No financial statements prepared' },
+          { value: 2, text: 'Financial statements exist but have not been reviewed or audited' },
+          { value: 3, text: 'Financial statements reviewed but not audited' },
+          { value: 4, text: 'Some years audited, some reviewed' },
+          { value: 5, text: 'Three or more years of audited financial statements' }
         ]
       },
       {
-        id: 'fin2',
-        text: 'How well-documented and organized are your financial records?',
+        id: 'financial_2',
+        text: 'How well documented are your financial forecasts and assumptions?',
         options: [
-          { value: 10, text: 'Comprehensive, audited financial statements for 5+ years' },
-          { value: 8, text: 'Well-organized records with 3+ years of clean financials' },
-          { value: 5, text: 'Adequate records but some inconsistencies' },
-          { value: 3, text: 'Basic financial tracking with gaps' },
-          { value: 1, text: 'Minimal or disorganized financial records' }
+          { value: 1, text: 'No formal forecasts exist' },
+          { value: 2, text: 'Basic forecasts without detailed assumptions' },
+          { value: 3, text: 'Forecasts with some documented assumptions' },
+          { value: 4, text: 'Detailed forecasts with most assumptions documented' },
+          { value: 5, text: 'Comprehensive forecasts with all assumptions thoroughly documented' }
         ]
       },
       {
-        id: 'fin3',
-        text: 'How diversified is your customer/client base?',
+        id: 'financial_3',
+        text: 'How consistent has your revenue growth been over the past 3 years?',
         options: [
-          { value: 10, text: 'Highly diversified, no client represents >5% of revenue' },
-          { value: 8, text: 'Well diversified, no client represents >10% of revenue' },
-          { value: 5, text: 'Moderately diversified, largest client is 10-20% of revenue' },
-          { value: 3, text: 'Limited diversity, 1-2 clients represent 20-50% of revenue' },
-          { value: 1, text: 'Highly concentrated, one client represents >50% of revenue' }
+          { value: 1, text: 'Declining revenue' },
+          { value: 2, text: 'Flat or inconsistent revenue' },
+          { value: 3, text: 'Moderate growth (5-10% annually)' },
+          { value: 4, text: 'Strong growth (10-20% annually)' },
+          { value: 5, text: 'Exceptional growth (>20% annually)' }
         ]
       },
       {
-        id: 'fin4',
-        text: 'How would you rate your business valuation knowledge?',
+        id: 'financial_4',
+        text: 'How diversified is your customer base?',
         options: [
-          { value: 10, text: 'Professional valuation completed within past year' },
-          { value: 8, text: 'Good understanding of business value with informal valuation' },
-          { value: 5, text: 'Some understanding of valuation methods' },
-          { value: 3, text: 'Limited knowledge of business value' },
-          { value: 1, text: 'No understanding of business valuation' }
+          { value: 1, text: 'One customer represents >50% of revenue' },
+          { value: 2, text: 'Top 3 customers represent >50% of revenue' },
+          { value: 3, text: 'Top 5 customers represent >50% of revenue' },
+          { value: 4, text: 'Top 10 customers represent >50% of revenue' },
+          { value: 5, text: 'No single customer represents >10% of revenue' }
+        ]
+      },
+      {
+        id: 'financial_5',
+        text: 'Have you had a formal business valuation performed in the last 2 years?',
+        options: [
+          { value: 1, text: 'Never had a formal valuation' },
+          { value: 2, text: 'Informal valuation only' },
+          { value: 3, text: 'Formal valuation but more than 2 years ago' },
+          { value: 4, text: 'Formal valuation within last 2 years' },
+          { value: 5, text: 'Multiple formal valuations with different methodologies' }
         ]
       }
     ]
   },
   {
-    id: 'businessOperations',
-    title: 'Business Operations',
+    id: 'operations',
+    title: 'Operational Efficiency',
+    description: 'Assess your operational processes, documentation, and scalability',
     icon: 'cogs',
-    description: 'Assess how well your business functions without your direct involvement.',
     questions: [
       {
-        id: 'ops1',
-        text: 'How well could your business operate without your daily involvement?',
+        id: 'operations_1',
+        text: 'How well documented are your key operational processes?',
         options: [
-          { value: 10, text: 'Business runs smoothly without my involvement for extended periods' },
-          { value: 8, text: 'Business operates well with minimal weekly oversight' },
-          { value: 5, text: 'Business needs my attention several times weekly' },
-          { value: 3, text: 'Business requires my daily involvement' },
-          { value: 1, text: 'Business cannot function without me' }
+          { value: 1, text: 'No formal documentation exists' },
+          { value: 2, text: 'Limited documentation of some processes' },
+          { value: 3, text: 'Key processes documented but not regularly updated' },
+          { value: 4, text: 'Most processes well documented and updated' },
+          { value: 5, text: 'Comprehensive documentation of all processes with regular updates' }
         ]
       },
       {
-        id: 'ops2',
-        text: 'How well documented are your business processes and procedures?',
+        id: 'operations_2',
+        text: 'How dependent is the business on your personal involvement in daily operations?',
         options: [
-          { value: 10, text: 'Comprehensive documentation for all key processes' },
-          { value: 8, text: 'Most important processes are well documented' },
-          { value: 5, text: 'Some processes documented, but with gaps' },
-          { value: 3, text: 'Minimal documentation exists' },
-          { value: 1, text: 'No formal documentation of processes' }
+          { value: 1, text: 'Business cannot function without my daily involvement' },
+          { value: 2, text: 'Business struggles significantly without my regular involvement' },
+          { value: 3, text: 'Business can function for short periods without my involvement' },
+          { value: 4, text: 'Business runs smoothly with my occasional oversight' },
+          { value: 5, text: 'Business operates independently of my involvement' }
         ]
       },
       {
-        id: 'ops3',
-        text: 'How strong is your management team beyond yourself?',
+        id: 'operations_3',
+        text: 'How scalable are your current operational systems?',
         options: [
-          { value: 10, text: 'Complete team that could run the business without me' },
-          { value: 8, text: 'Strong team that handles most functions independently' },
-          { value: 5, text: 'Capable team but still dependent on me for key decisions' },
-          { value: 3, text: 'Limited management beyond myself' },
-          { value: 1, text: 'No management team beyond myself' }
+          { value: 1, text: 'Systems would fail with any significant growth' },
+          { value: 2, text: 'Systems would require major overhaul to scale' },
+          { value: 3, text: 'Systems could handle moderate growth with some adjustments' },
+          { value: 4, text: 'Systems designed for scalability with minor adjustments needed' },
+          { value: 5, text: 'Systems fully scalable with no significant changes needed' }
         ]
       },
       {
-        id: 'ops4',
-        text: 'How scalable are your business operations?',
+        id: 'operations_4',
+        text: 'How well managed is your supply chain and vendor relationships?',
         options: [
-          { value: 10, text: 'Highly scalable with systems to handle significant growth' },
-          { value: 8, text: 'Good scalability with some systems in place' },
-          { value: 5, text: 'Moderately scalable but would require investment' },
-          { value: 3, text: 'Limited scalability with current systems' },
-          { value: 1, text: 'Not scalable beyond current size' }
+          { value: 1, text: 'Heavy reliance on single suppliers with no contracts' },
+          { value: 2, text: 'Some key suppliers with informal agreements' },
+          { value: 3, text: 'Multiple suppliers with some formal contracts' },
+          { value: 4, text: 'Diversified supplier base with most relationships formalized' },
+          { value: 5, text: 'Fully diversified supplier base with all formal agreements in place' }
+        ]
+      },
+      {
+        id: 'operations_5',
+        text: 'How effective are your quality control and continuous improvement processes?',
+        options: [
+          { value: 1, text: 'No formal quality control processes' },
+          { value: 2, text: 'Basic quality checks but no improvement system' },
+          { value: 3, text: 'Established quality control with occasional improvements' },
+          { value: 4, text: 'Robust quality system with regular improvement initiatives' },
+          { value: 5, text: 'Comprehensive quality management system with continuous improvement culture' }
         ]
       }
     ]
   },
   {
-    id: 'legalCompliance',
+    id: 'legal',
     title: 'Legal & Compliance',
+    description: 'Review your legal structure, contracts, intellectual property, and regulatory compliance',
     icon: 'balance-scale',
-    description: 'Evaluate your legal preparedness and compliance status.',
     questions: [
       {
-        id: 'legal1',
-        text: 'How well-organized are your business legal documents and contracts?',
+        id: 'legal_1',
+        text: 'How well protected is your intellectual property?',
         options: [
-          { value: 10, text: 'All documents organized, reviewed, and current' },
-          { value: 8, text: 'Most documents organized with minor updates needed' },
-          { value: 5, text: 'Basic organization but several documents need review' },
-          { value: 3, text: 'Poorly organized with significant gaps' },
-          { value: 1, text: 'Disorganized or missing critical documents' }
+          { value: 1, text: 'No formal IP protection in place' },
+          { value: 2, text: 'Some IP identified but limited protection' },
+          { value: 3, text: 'Key IP protected but gaps exist' },
+          { value: 4, text: 'Most IP properly protected and documented' },
+          { value: 5, text: 'All IP comprehensively protected, documented and regularly reviewed' }
         ]
       },
       {
-        id: 'legal2',
-        text: 'How protected is your intellectual property?',
+        id: 'legal_2',
+        text: 'How current and comprehensive are your customer and vendor contracts?',
         options: [
-          { value: 10, text: 'All IP formally protected and documented' },
-          { value: 8, text: 'Most valuable IP protected' },
-          { value: 5, text: 'Some IP protected but gaps exist' },
-          { value: 3, text: 'Minimal IP protection in place' },
-          { value: 1, text: 'No formal IP protection' }
+          { value: 1, text: 'Few or no formal contracts in place' },
+          { value: 2, text: 'Basic contracts but outdated or incomplete' },
+          { value: 3, text: 'Standard contracts in place but not regularly reviewed' },
+          { value: 4, text: 'Comprehensive contracts with most relationships' },
+          { value: 5, text: 'All relationships governed by thorough, current contracts' }
         ]
       },
       {
-        id: 'legal3',
-        text: 'How current is your compliance with industry regulations?',
+        id: 'legal_3',
+        text: 'How well prepared are you for regulatory compliance audits?',
         options: [
-          { value: 10, text: 'Fully compliant with all regulations, regularly audited' },
-          { value: 8, text: 'Generally compliant with good monitoring systems' },
-          { value: 5, text: 'Mostly compliant but some areas need attention' },
-          { value: 3, text: 'Significant compliance gaps exist' },
-          { value: 1, text: 'Major compliance issues or unknown status' }
+          { value: 1, text: 'Significant compliance issues exist' },
+          { value: 2, text: 'Some compliance measures in place but gaps exist' },
+          { value: 3, text: 'Generally compliant but documentation incomplete' },
+          { value: 4, text: 'Fully compliant with good documentation' },
+          { value: 5, text: 'Exemplary compliance with comprehensive documentation' }
         ]
       },
       {
-        id: 'legal4',
-        text: 'How well are your customer/vendor relationships legally protected?',
+        id: 'legal_4',
+        text: 'How well structured is your business from a legal perspective for a potential sale?',
         options: [
-          { value: 10, text: 'All relationships have current, comprehensive contracts' },
-          { value: 8, text: 'Most important relationships have solid contracts' },
-          { value: 5, text: 'Basic contracts in place but some need updating' },
-          { value: 3, text: 'Few formal contracts exist' },
-          { value: 1, text: 'No formal contracts with customers/vendors' }
+          { value: 1, text: 'Legal structure would complicate a sale' },
+          { value: 2, text: 'Basic legal structure but would need significant work' },
+          { value: 3, text: 'Adequate structure but some reorganization needed' },
+          { value: 4, text: 'Good structure with minor adjustments needed' },
+          { value: 5, text: 'Optimal legal structure for a clean sale' }
+        ]
+      },
+      {
+        id: 'legal_5',
+        text: 'How well documented and resolved are any past or current legal disputes?',
+        options: [
+          { value: 1, text: 'Active significant disputes with poor documentation' },
+          { value: 2, text: 'Some active disputes with limited documentation' },
+          { value: 3, text: 'Minor active issues, past issues documented' },
+          { value: 4, text: 'No active disputes, past issues well documented and resolved' },
+          { value: 5, text: 'No history of significant disputes or all fully resolved and documented' }
         ]
       }
     ]
   },
   {
-    id: 'marketPosition',
+    id: 'market',
     title: 'Market Position',
-    icon: 'chart-bar',
-    description: 'Assess your competitive position and market strength.',
+    description: 'Evaluate your competitive advantage, market trends, and growth potential',
+    icon: 'chart-line',
     questions: [
       {
-        id: 'market1',
-        text: 'How strong is your business brand in your market?',
+        id: 'market_1',
+        text: 'How well defined and defensible is your competitive advantage?',
         options: [
-          { value: 10, text: 'Market leader with strong brand recognition' },
-          { value: 8, text: 'Well-established brand with good recognition' },
-          { value: 5, text: 'Moderate brand recognition in our market' },
-          { value: 3, text: 'Limited brand recognition' },
-          { value: 1, text: 'Little to no brand recognition' }
+          { value: 1, text: 'No clear competitive advantage' },
+          { value: 2, text: 'Advantage exists but is easily replicated' },
+          { value: 3, text: 'Moderate advantage with some barriers to replication' },
+          { value: 4, text: 'Strong advantage that is difficult to replicate' },
+          { value: 5, text: 'Unique, sustainable advantage with high barriers to entry' }
         ]
       },
       {
-        id: 'market2',
-        text: 'How would you rate your business growth potential?',
+        id: 'market_2',
+        text: 'How favorable are the growth trends in your primary markets?',
         options: [
-          { value: 10, text: 'Exceptional growth potential in expanding markets' },
-          { value: 8, text: 'Strong growth potential with clear opportunities' },
-          { value: 5, text: 'Moderate growth potential' },
-          { value: 3, text: 'Limited growth potential' },
-          { value: 1, text: 'Stagnant or declining market' }
+          { value: 1, text: 'Markets in decline' },
+          { value: 2, text: 'Flat markets with limited growth potential' },
+          { value: 3, text: 'Moderate growth in some market segments' },
+          { value: 4, text: 'Strong growth across most market segments' },
+          { value: 5, text: 'High-growth markets with exceptional potential' }
         ]
       },
       {
-        id: 'market3',
-        text: 'How differentiated is your business from competitors?',
+        id: 'market_3',
+        text: 'How diversified are your revenue streams?',
         options: [
-          { value: 10, text: 'Unique offering with strong competitive advantages' },
-          { value: 8, text: 'Clear differentiation from most competitors' },
-          { value: 5, text: 'Some differentiation but similar to competitors' },
-          { value: 3, text: 'Minimal differentiation' },
-          { value: 1, text: 'No meaningful differentiation' }
+          { value: 1, text: 'Single product/service line' },
+          { value: 2, text: 'Limited diversification with heavy reliance on primary offering' },
+          { value: 3, text: 'Multiple offerings but significant concentration' },
+          { value: 4, text: 'Well-diversified offerings with some concentration' },
+          { value: 5, text: 'Highly diversified revenue streams across products/services' }
         ]
       },
       {
-        id: 'market4',
-        text: 'How stable and recurring is your revenue?',
+        id: 'market_4',
+        text: 'How strong is your brand recognition and reputation in your market?',
         options: [
-          { value: 10, text: '80%+ recurring revenue with long-term contracts' },
-          { value: 8, text: '50-80% recurring or highly predictable revenue' },
-          { value: 5, text: '30-50% recurring revenue' },
-          { value: 3, text: '10-30% recurring revenue' },
-          { value: 1, text: 'Little to no recurring revenue' }
+          { value: 1, text: 'Little to no brand recognition' },
+          { value: 2, text: 'Limited recognition in niche segments' },
+          { value: 3, text: 'Moderate recognition in primary markets' },
+          { value: 4, text: 'Strong recognition and positive reputation' },
+          { value: 5, text: 'Market leader with exceptional brand equity' }
+        ]
+      },
+      {
+        id: 'market_5',
+        text: 'How well positioned is your business for emerging market trends?',
+        options: [
+          { value: 1, text: 'Not aligned with market trends' },
+          { value: 2, text: 'Limited awareness of trends with minimal adaptation' },
+          { value: 3, text: 'Aware of trends with some adaptation in progress' },
+          { value: 4, text: 'Well-aligned with current trends' },
+          { value: 5, text: 'Ahead of market trends with proactive positioning' }
         ]
       }
     ]
   },
   {
-    id: 'successionPlanning',
-    title: 'Succession Planning',
+    id: 'team',
+    title: 'Management & Team',
+    description: 'Assess your leadership structure, team capabilities, and succession planning',
     icon: 'users',
-    description: 'Evaluate your readiness for leadership transition.',
     questions: [
       {
-        id: 'succession1',
-        text: 'Do you have a formal succession plan in place?',
+        id: 'team_1',
+        text: 'How strong is your management team beyond the owner/founder?',
         options: [
-          { value: 10, text: 'Comprehensive plan with timeline and training in progress' },
-          { value: 8, text: 'Formal plan exists but implementation just beginning' },
-          { value: 5, text: 'Basic plan outlined but not formalized' },
-          { value: 3, text: 'Informal thoughts but no actual plan' },
-          { value: 1, text: 'No succession planning at all' }
+          { value: 1, text: 'No management team beyond owner' },
+          { value: 2, text: 'Limited management with significant gaps' },
+          { value: 3, text: 'Core management team but some key positions unfilled' },
+          { value: 4, text: 'Strong team covering most key functions' },
+          { value: 5, text: 'Complete, experienced management team across all functions' }
         ]
       },
       {
-        id: 'succession2',
-        text: 'Have you identified potential successors for key roles?',
+        id: 'team_2',
+        text: 'How well documented are your HR policies, procedures and employee agreements?',
         options: [
-          { value: 10, text: 'Successors identified and being developed for all key roles' },
-          { value: 8, text: 'Successors identified for most key roles' },
-          { value: 5, text: 'Some potential successors identified' },
-          { value: 3, text: 'Limited successor identification' },
-          { value: 1, text: 'No successors identified' }
+          { value: 1, text: 'No formal HR documentation' },
+          { value: 2, text: 'Basic documentation but significant gaps' },
+          { value: 3, text: 'Standard documentation but not consistently implemented' },
+          { value: 4, text: 'Comprehensive documentation with good implementation' },
+          { value: 5, text: 'Complete, professional HR systems fully implemented' }
         ]
       },
       {
-        id: 'succession3',
-        text: 'How prepared is your business for an unexpected leadership transition?',
+        id: 'team_3',
+        text: 'How developed is your succession planning for key positions?',
         options: [
-          { value: 10, text: 'Fully prepared with emergency plan and trained personnel' },
-          { value: 8, text: 'Good preparation with basic emergency plans' },
-          { value: 5, text: 'Some preparation but significant gaps exist' },
-          { value: 3, text: 'Minimal preparation' },
-          { value: 1, text: 'Completely unprepared' }
+          { value: 1, text: 'No succession planning in place' },
+          { value: 2, text: 'Informal discussions but no formal plans' },
+          { value: 3, text: 'Some positions with identified successors but limited development' },
+          { value: 4, text: 'Most key positions with succession plans and development in progress' },
+          { value: 5, text: 'Comprehensive succession planning with development for all key roles' }
         ]
       },
       {
-        id: 'succession4',
-        text: 'How well have you documented your unique knowledge and relationships?',
+        id: 'team_4',
+        text: 'How would you rate employee retention and satisfaction?',
         options: [
-          { value: 10, text: 'Comprehensive documentation and knowledge transfer in progress' },
-          { value: 8, text: 'Good documentation of most critical knowledge' },
-          { value: 5, text: 'Some documentation but significant gaps remain' },
-          { value: 3, text: 'Minimal documentation of key knowledge' },
-          { value: 1, text: 'No documentation of personal knowledge or relationships' }
+          { value: 1, text: 'High turnover with significant satisfaction issues' },
+          { value: 2, text: 'Above-average turnover with some satisfaction concerns' },
+          { value: 3, text: 'Average turnover and satisfaction levels' },
+          { value: 4, text: 'Below-average turnover with good satisfaction' },
+          { value: 5, text: 'Exceptional retention with high satisfaction and engagement' }
+        ]
+      },
+      {
+        id: 'team_5',
+        text: 'How effective are your training and development programs?',
+        options: [
+          { value: 1, text: 'No formal training programs' },
+          { value: 2, text: 'Basic training for essential functions only' },
+          { value: 3, text: 'Standard training programs but limited development' },
+          { value: 4, text: 'Good training with development for key positions' },
+          { value: 5, text: 'Comprehensive training and development across all levels' }
         ]
       }
     ]
   },
   {
-    id: 'personalReadiness',
+    id: 'personal',
     title: 'Personal Readiness',
+    description: 'Evaluate your personal and financial preparation for a business exit',
     icon: 'user',
-    description: 'Assess your personal and financial readiness for exit.',
     questions: [
       {
-        id: 'personal1',
-        text: 'How clear are your personal goals for after the business exit?',
+        id: 'personal_1',
+        text: 'How clear is your personal vision for life after business exit?',
         options: [
-          { value: 10, text: 'Very clear goals with specific plans in place' },
-          { value: 8, text: 'Clear goals but plans still developing' },
-          { value: 5, text: 'General ideas but no specific goals' },
-          { value: 3, text: 'Limited thought given to post-exit life' },
-          { value: 1, text: 'No consideration of life after business' }
+          { value: 1, text: 'Have not considered post-exit plans' },
+          { value: 2, text: 'Vague ideas but no concrete plans' },
+          { value: 3, text: 'Some planning but significant uncertainty' },
+          { value: 4, text: 'Clear vision with some specific plans' },
+          { value: 5, text: 'Comprehensive personal plan for post-exit life' }
         ]
       },
       {
-        id: 'personal2',
-        text: 'How prepared are you financially for a business exit?',
+        id: 'personal_2',
+        text: 'How prepared is your personal financial plan for life after exit?',
         options: [
-          { value: 10, text: 'Comprehensive financial plan with exit proceeds factored in' },
-          { value: 8, text: 'Good financial preparation with some planning' },
-          { value: 5, text: 'Some financial planning but gaps exist' },
-          { value: 3, text: 'Limited financial preparation' },
-          { value: 1, text: 'No financial planning for post-exit' }
+          { value: 1, text: 'No personal financial planning for exit' },
+          { value: 2, text: 'Basic understanding of needs but no formal planning' },
+          { value: 3, text: 'Some planning but gaps in analysis' },
+          { value: 4, text: 'Detailed planning with professional advice' },
+          { value: 5, text: 'Comprehensive financial plan with multiple scenarios analyzed' }
         ]
       },
       {
-        id: 'personal3',
-        text: 'How emotionally prepared are you to exit your business?',
+        id: 'personal_3',
+        text: 'How well have you prepared your family for the business exit?',
         options: [
-          { value: 10, text: 'Fully prepared and looking forward to transition' },
-          { value: 8, text: 'Generally prepared with some reservations' },
-          { value: 5, text: 'Mixed feelings about exiting' },
-          { value: 3, text: 'Significant emotional attachment making exit difficult' },
-          { value: 1, text: 'Not emotionally prepared to exit' }
+          { value: 1, text: 'No family discussions about exit' },
+          { value: 2, text: 'Limited discussions with immediate family' },
+          { value: 3, text: 'Some family planning but not comprehensive' },
+          { value: 4, text: 'Good communication with family and basic planning' },
+          { value: 5, text: 'Comprehensive family planning with professional guidance' }
         ]
       },
       {
-        id: 'personal4',
-        text: 'How aligned are stakeholders (family, partners) with your exit plans?',
+        id: 'personal_4',
+        text: 'How clear are you on your desired exit timeline?',
         options: [
-          { value: 10, text: 'Full alignment with all stakeholders engaged in planning' },
-          { value: 8, text: 'General alignment with most stakeholders' },
-          { value: 5, text: 'Mixed alignment with some disagreements' },
-          { value: 3, text: 'Limited alignment with significant concerns' },
-          { value: 1, text: 'No alignment or communication about exit' }
+          { value: 1, text: 'No timeline considered' },
+          { value: 2, text: 'Vague idea but no specific timeline' },
+          { value: 3, text: 'General timeline but flexible' },
+          { value: 4, text: 'Specific timeline with some planning' },
+          { value: 5, text: 'Clear timeline with comprehensive planning' }
+        ]
+      },
+      {
+        id: 'personal_5',
+        text: 'How emotionally prepared are you to separate from the business?',
+        options: [
+          { value: 1, text: 'Strong emotional attachment with no separation planning' },
+          { value: 2, text: 'Significant attachment with minimal preparation' },
+          { value: 3, text: 'Moderate attachment with some preparation' },
+          { value: 4, text: 'Limited attachment with good preparation' },
+          { value: 5, text: 'Emotionally ready with comprehensive preparation' }
         ]
       }
     ]
   }
 ]
-
-// Get recommendations based on scores
-export const getRecommendations = (scores) => {
-  const recommendations = {}
-  
-  // Financial Readiness recommendations
-  if (scores.financialReadiness < 8) {
-    recommendations.financialReadiness = [
-      { text: 'Implement more rigorous financial tracking and reporting systems.' },
-      { text: 'Consider a professional business valuation to establish a baseline.' },
-      { text: 'Develop strategies to diversify your customer/client base.' }
-    ]
-    
-    if (scores.financialReadiness < 5) {
-      recommendations.financialReadiness.push(
-        { text: 'Work with a financial advisor to improve profitability and growth metrics.' },
-        { text: 'Address any cash flow issues before considering exit options.' }
-      )
-    }
-  }
-  
-  // Business Operations recommendations
-  if (scores.businessOperations < 8) {
-    recommendations.businessOperations = [
-      { text: 'Document all critical business processes and procedures.' },
-      { text: 'Develop systems that reduce dependence on the owner.' },
-      { text: 'Strengthen your management team through hiring or training.' }
-    ]
-    
-    if (scores.businessOperations < 5) {
-      recommendations.businessOperations.push(
-        { text: 'Implement a structured transition plan to reduce your operational involvement.' },
-        { text: 'Consider bringing in an operations consultant to improve systems.' }
-      )
-    }
-  }
-  
-  // Legal & Compliance recommendations
-  if (scores.legalCompliance < 8) {
-    recommendations.legalCompliance = [
-      { text: 'Conduct a comprehensive legal audit of all contracts and documents.' },
-      { text: 'Ensure all intellectual property is properly protected.' },
-      { text: 'Address any regulatory compliance issues.' }
-    ]
-    
-    if (scores.legalCompliance < 5) {
-      recommendations.legalCompliance.push(
-        { text: 'Engage legal counsel to review and update all critical agreements.' },
-        { text: 'Implement a compliance management system for ongoing monitoring.' }
-      )
-    }
-  }
-  
-  // Market Position recommendations
-  if (scores.marketPosition < 8) {
-    recommendations.marketPosition = [
-      { text: 'Develop strategies to strengthen your brand recognition.' },
-      { text: 'Identify and capitalize on your unique competitive advantages.' },
-      { text: 'Explore opportunities to increase recurring revenue streams.' }
-    ]
-    
-    if (scores.marketPosition < 5) {
-      recommendations.marketPosition.push(
-        { text: 'Consider a market analysis to identify growth opportunities.' },
-        { text: 'Develop a strategic plan to improve market positioning before exit.' }
-      )
-    }
-  }
-  
-  // Succession Planning recommendations
-  if (scores.successionPlanning < 8) {
-    recommendations.successionPlanning = [
-      { text: 'Develop a formal succession plan with clear timelines.' },
-      { text: 'Identify and begin developing potential successors for key roles.' },
-      { text: 'Document your unique knowledge and customer relationships.' }
-    ]
-    
-    if (scores.successionPlanning < 5) {
-      recommendations.successionPlanning.push(
-        { text: 'Create an emergency succession plan for unexpected transitions.' },
-        { text: 'Consider hiring or developing leadership talent to fill critical gaps.' }
-      )
-    }
-  }
-  
-  // Personal Readiness recommendations
-  if (scores.personalReadiness < 8) {
-    recommendations.personalReadiness = [
-      { text: 'Clarify your personal goals and vision for life after business.' },
-      { text: 'Work with a financial advisor to ensure post-exit financial security.' },
-      { text: 'Begin preparing emotionally for the transition away from the business.' }
-    ]
-    
-    if (scores.personalReadiness < 5) {
-      recommendations.personalReadiness.push(
-        { text: 'Consider working with a coach or counselor on the emotional aspects of exit.' },
-        { text: 'Engage family members and key stakeholders in exit planning discussions.' }
-      )
-    }
-  }
-  
-  return recommendations
-}

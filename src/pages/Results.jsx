@@ -1,209 +1,209 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { FaDownload, FaRedo, FaExclamationTriangle, FaCheckCircle, FaArrowRight } from 'react-icons/fa'
 import { useScore } from '../contexts/ScoreContext'
-import { categories, getRecommendations } from '../data/questions'
-import ScoreChart from '../components/ScoreChart'
-import { FaDownload, FaEnvelope, FaExclamationTriangle, FaRedo } from 'react-icons/fa'
-import { generatePDF } from '../lib/pdfGenerator'
+import { categories } from '../data/questions'
 import { toast } from 'react-toastify'
 
 function Results() {
   const navigate = useNavigate()
-  const { scores, calculateTotalScore, getReadinessLevel, clearSavedData } = useScore()
-  const [recommendations, setRecommendations] = useState({})
-  const [showIncompleteWarning, setShowIncompleteWarning] = useState(false)
+  const { scores, calculateOverallScore, completedCategories, resetAll } = useScore()
+  const [isGenerating, setIsGenerating] = useState(false)
   
-  useEffect(() => {
-    // Check if assessment is complete
-    const totalScore = calculateTotalScore().raw
-    if (totalScore === 0) {
-      setShowIncompleteWarning(true)
+  const overallScore = calculateOverallScore()
+  
+  const getScoreColor = (score) => {
+    if (score >= 4) return 'text-success-600'
+    if (score >= 3) return 'text-warning-600'
+    return 'text-danger-600'
+  }
+  
+  const getScoreBackground = (score) => {
+    if (score >= 4) return 'bg-success-100'
+    if (score >= 3) return 'bg-warning-100'
+    return 'bg-danger-100'
+  }
+  
+  const getRecommendation = (categoryId, score) => {
+    if (score >= 4) {
+      return 'Your business is well-positioned in this area. Continue to maintain and improve these practices.'
+    } else if (score >= 3) {
+      return 'Your business has a solid foundation but there are opportunities for improvement.'
     } else {
-      setShowIncompleteWarning(false)
-      // Get recommendations based on scores
-      setRecommendations(getRecommendations(scores))
+      switch (categoryId) {
+        case 'financial':
+          return 'Consider working with a financial advisor to improve your financial documentation and forecasting.'
+        case 'operations':
+          return 'Focus on documenting key processes and reducing operational dependencies on key individuals.'
+        case 'legal':
+          return 'Consult with legal counsel to address compliance issues and strengthen contractual protections.'
+        case 'market':
+          return 'Develop strategies to strengthen your competitive position and diversify revenue streams.'
+        case 'team':
+          return 'Invest in building a stronger management team and implementing succession planning.'
+        case 'personal':
+          return 'Work with a financial planner and exit planning specialist to develop your personal exit strategy.'
+        default:
+          return 'This area needs significant improvement before your business is exit-ready.'
+      }
     }
-  }, [scores, calculateTotalScore])
+  }
   
-  const handleDownloadPDF = () => {
-    if (showIncompleteWarning) {
-      toast.error('Please complete the assessment before downloading results')
-      return
-    }
+  const handleDownloadPDF = async () => {
+    setIsGenerating(true)
     
-    navigate('/contact', { state: { action: 'download' } })
-  }
-  
-  const handleEmailResults = () => {
-    if (showIncompleteWarning) {
-      toast.error('Please complete the assessment before emailing results')
-      return
-    }
-    
-    navigate('/contact', { state: { action: 'email' } })
-  }
-  
-  const handleStartAssessment = () => {
-    navigate('/assessment')
-  }
-  
-  const handleStartNewAssessment = () => {
-    if (window.confirm('Are you sure you want to start a new assessment? This will clear all your current data.')) {
-      clearSavedData()
-      navigate('/assessment')
-      toast.success('Started a new assessment')
+    try {
+      // Simulate PDF generation
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      
+      toast.success('PDF report generated successfully!')
+      // In a real app, this would trigger a download
+    } catch (error) {
+      toast.error('There was an error generating your PDF report.')
+    } finally {
+      setIsGenerating(false)
     }
   }
   
-  const readinessInfo = getReadinessLevel()
-  const totalScore = calculateTotalScore()
+  const handleReset = () => {
+    if (window.confirm('Are you sure you want to reset all your assessment data? This cannot be undone.')) {
+      resetAll()
+      navigate('/')
+      toast.info('Assessment data has been reset.')
+    }
+  }
   
-  return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {showIncompleteWarning ? (
-        <div className="bg-warning-50 border-l-4 border-warning-500 p-6 rounded-lg mb-8">
-          <div className="flex items-start">
-            <div className="flex-shrink-0">
-              <FaExclamationTriangle className="h-6 w-6 text-warning-500" />
-            </div>
-            <div className="ml-3">
-              <h3 className="text-lg font-medium text-warning-700">Assessment Incomplete</h3>
-              <p className="mt-2 text-warning-600">
-                You haven't completed the assessment yet. Please complete all categories to see your full results.
-              </p>
-              <div className="mt-4">
-                <button
-                  onClick={handleStartAssessment}
-                  className="btn btn-warning"
-                >
-                  Continue Assessment
-                </button>
-              </div>
-            </div>
+  // Check if user has completed any assessments
+  if (completedCategories.length === 0) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="text-center">
+          <FaExclamationTriangle className="mx-auto h-12 w-12 text-warning-500" />
+          <h2 className="mt-6 text-3xl font-bold text-gray-900">No Assessment Data</h2>
+          <p className="mt-2 text-lg text-gray-600">
+            You haven't completed any category assessments yet.
+          </p>
+          <div className="mt-6">
+            <button
+              onClick={() => navigate('/assessment')}
+              className="btn btn-primary"
+            >
+              Start Assessment
+            </button>
           </div>
         </div>
-      ) : (
-        <>
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Your Exit Planning Results</h1>
-            <p className="text-lg text-gray-600">
-              Based on your responses, here's how ready your business is for exit
-            </p>
+      </div>
+    )
+  }
+  
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="text-center mb-12">
+        <h1 className="text-3xl font-bold text-gray-900">Your Exit Readiness Results</h1>
+        <p className="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+          Based on your assessment, here's how your business scores on exit readiness.
+        </p>
+      </div>
+      
+      {/* Overall Score */}
+      <div className="bg-white shadow-lg rounded-lg p-6 mb-12">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Overall Exit Readiness Score</h2>
+          <div className={`inline-flex items-center justify-center h-32 w-32 rounded-full ${getScoreBackground(overallScore)} mb-4`}>
+            <span className={`text-4xl font-bold ${getScoreColor(overallScore)}`}>{overallScore}/5</span>
           </div>
+          <p className="text-lg text-gray-700">
+            {overallScore >= 4 ? (
+              <span className="flex items-center justify-center">
+                <FaCheckCircle className="text-success-500 mr-2" />
+                Your business is well-positioned for a successful exit
+              </span>
+            ) : overallScore >= 3 ? (
+              <span>Your business has a solid foundation but needs improvement in key areas</span>
+            ) : (
+              <span className="flex items-center justify-center">
+                <FaExclamationTriangle className="text-warning-500 mr-2" />
+                Significant improvements needed before your business is exit-ready
+              </span>
+            )}
+          </p>
+        </div>
+      </div>
+      
+      {/* Category Scores */}
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Category Breakdown</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        {categories.map((category) => {
+          const score = scores[category.id] || 0
+          const completed = completedCategories.includes(category.id)
           
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-            <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-md p-6 h-full">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Overall Readiness</h2>
-                
-                <div className="text-center py-6">
-                  <div className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-primary-50 border-8 border-primary-100 mb-4">
-                    <span className="text-4xl font-bold text-primary-700">{totalScore.percentage}%</span>
-                  </div>
-                  
-                  <h3 className="text-2xl font-semibold text-gray-900 mb-2">{readinessInfo.level}</h3>
-                  <p className="text-gray-600">{readinessInfo.description}</p>
+          return (
+            <div key={category.id} className="bg-white shadow rounded-lg overflow-hidden">
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-xl font-semibold text-gray-900">{category.title}</h3>
+                  {completed ? (
+                    <span className={`text-2xl font-bold ${getScoreColor(score)}`}>{score}/5</span>
+                  ) : (
+                    <span className="text-sm bg-gray-100 text-gray-600 py-1 px-2 rounded">Not Completed</span>
+                  )}
                 </div>
                 
-                <div className="mt-6 space-y-4">
-                  <button
-                    onClick={handleDownloadPDF}
-                    className="btn btn-primary w-full flex items-center justify-center"
-                  >
-                    <FaDownload className="mr-2" /> Download PDF Report
-                  </button>
-                  
-                  <button
-                    onClick={handleEmailResults}
-                    className="btn btn-secondary w-full flex items-center justify-center"
-                  >
-                    <FaEnvelope className="mr-2" /> Email Results
-                  </button>
-                  
-                  <button
-                    onClick={handleStartNewAssessment}
-                    className="btn btn-outline w-full flex items-center justify-center"
-                  >
-                    <FaRedo className="mr-2" /> Start New Assessment
-                  </button>
-                </div>
-              </div>
-            </div>
-            
-            <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-md p-6 h-full">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Category Breakdown</h2>
-                <ScoreChart scores={scores} />
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow-md p-6 mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Category Scores</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {categories.map((category) => {
-                const score = scores[category.id] || 0
-                let statusColor = 'text-danger-500'
-                let statusText = 'Needs Improvement'
-                
-                if (score >= 8) {
-                  statusColor = 'text-success-500'
-                  statusText = 'Strong'
-                } else if (score >= 5) {
-                  statusColor = 'text-warning-500'
-                  statusText = 'Moderate'
-                }
-                
-                return (
-                  <div key={category.id} className="bg-gray-50 rounded-lg p-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <h3 className="text-lg font-semibold text-gray-900">{category.title}</h3>
-                      <span className="text-2xl font-bold text-primary-600">{score}/10</span>
+                {completed ? (
+                  <>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+                      <div 
+                        className={`h-2.5 rounded-full ${score >= 4 ? 'bg-success-500' : score >= 3 ? 'bg-warning-500' : 'bg-danger-500'}`} 
+                        style={{ width: `${(score / 5) * 100}%` }}
+                      ></div>
                     </div>
-                    <p className={`text-sm font-medium ${statusColor}`}>{statusText}</p>
+                    <p className="text-gray-600">{getRecommendation(category.id, score)}</p>
+                  </>
+                ) : (
+                  <div className="mt-4">
+                    <button
+                      onClick={() => navigate('/assessment', { state: { categoryId: category.id } })}
+                      className="btn btn-secondary btn-sm"
+                    >
+                      Complete This Assessment
+                      <FaArrowRight className="ml-2" />
+                    </button>
                   </div>
-                )
-              })}
+                )}
+              </div>
             </div>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Key Recommendations</h2>
-            
-            <div className="space-y-8">
-              {categories.map((category) => {
-                const categoryRecs = recommendations[category.id] || []
-                
-                if (categoryRecs.length === 0) {
-                  return null
-                }
-                
-                return (
-                  <div key={category.id}>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-4">{category.title}</h3>
-                    
-                    <ul className="space-y-3">
-                      {categoryRecs.map((rec, index) => (
-                        <li key={index} className="flex">
-                          <span className="text-primary-600 mr-2">•</span>
-                          <span>{rec.text}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )
-              })}
-              
-              {Object.values(recommendations).every(recs => recs.length === 0) && (
-                <p className="text-gray-600 text-center py-4">
-                  Great job! Your business appears to be well-prepared for exit across all categories.
-                </p>
-              )}
-            </div>
-          </div>
-        </>
-      )}
+          )
+        })}
+      </div>
+      
+      {/* Action Buttons */}
+      <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+        <button
+          onClick={handleDownloadPDF}
+          disabled={isGenerating}
+          className="btn btn-primary"
+        >
+          {isGenerating ? 'Generating PDF...' : (
+            <>
+              <FaDownload className="mr-2" />
+              Download PDF Report
+            </>
+          )}
+        </button>
+        <button
+          onClick={() => navigate('/assessment')}
+          className="btn btn-secondary"
+        >
+          Continue Assessment
+        </button>
+        <button
+          onClick={handleReset}
+          className="btn btn-danger"
+        >
+          <FaRedo className="mr-2" />
+          Reset All Data
+        </button>
+      </div>
     </div>
   )
 }
